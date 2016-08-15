@@ -4,6 +4,10 @@ As old pin set 0000, in case you want remove pin completely, leave blank new pin
 
 Im not responsible for illegal usage of this software, use on your own risk. Software has been made for educational purposes.
 </b>
+
+
+
+
 Welcome to _Dash Wallet_, a standalone Dash payment app for your Android device!
 
 This project contains several sub-projects:

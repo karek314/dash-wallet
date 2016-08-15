@@ -20,7 +20,6 @@ package de.schildbach.wallet.ui;
 import java.security.SecureRandom;
 
 import javax.annotation.Nullable;
-
 import org.bitcoinj.core.Wallet;
 import org.bitcoinj.crypto.KeyCrypter;
 import org.bitcoinj.crypto.KeyCrypterException;
@@ -29,6 +28,8 @@ import org.bitcoinj.wallet.Protos;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.crypto.params.KeyParameter;
+import android.os.PowerManager;
+import android.widget.BaseAdapter;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -63,6 +64,8 @@ import hashengineering.darkcoin.wallet.R;
 public class EncryptKeysDialogFragment extends DialogFragment
 {
 	private static final int SCRYPT_ITERATIONS = 4096;
+    private int CURRENT_PIN = 999;
+    private int CURRENT_PIN_COUNTER = 0;
 
 	private static final String FRAGMENT_TAG = EncryptKeysDialogFragment.class.getName();
 
@@ -107,6 +110,8 @@ public class EncryptKeysDialogFragment extends DialogFragment
 		{
 			badPasswordView.setVisibility(View.INVISIBLE);
 			updateView();
+            log.info("BRUTE: Text Changed", "1");
+           // Log.debug("myTag", "This is my message");
 		}
 
 		@Override
@@ -133,6 +138,7 @@ public class EncryptKeysDialogFragment extends DialogFragment
 	@Override
 	public void onCreate(final Bundle savedInstanceState)
 	{
+        log.info("BRUTE: ON CREATE", "1");
 		super.onCreate(savedInstanceState);
 
 		backgroundThread = new HandlerThread("backgroundThread", Process.THREAD_PRIORITY_BACKGROUND);
@@ -234,13 +240,20 @@ public class EncryptKeysDialogFragment extends DialogFragment
 	}
 
 	private void handleGo()
-	{
+    {
+
+        CURRENT_PIN = CURRENT_PIN + 1;
+        CURRENT_PIN_COUNTER = CURRENT_PIN_COUNTER +1;
+        log.info("BRUTE: GO BUTTON", "1");
 		final boolean isEncrypted = wallet.isEncrypted();
+        oldPasswordView.setText(String.valueOf(CURRENT_PIN));
 		final String oldPassword = oldPasswordView.getText().toString().trim();
 		final String password = newPasswordView.getText().toString().trim();
 
 		state = State.CRYPTING;
 		updateView();
+
+        positiveButton.setText("CURRENT TRY:"+String.valueOf(CURRENT_PIN_COUNTER));
 
 		backgroundHandler.post(new Runnable()
 		{
@@ -280,13 +293,13 @@ public class EncryptKeysDialogFragment extends DialogFragment
 						}
 						catch (final KeyCrypterException x)
 						{
-							badPasswordView.setVisibility(View.VISIBLE);
+							//badPasswordView.setVisibility(View.VISIBLE);
 
-							state = State.INPUT;
-							updateView();
+							//state = State.INPUT;
+							//updateView();
 
-							oldPasswordView.requestFocus();
-
+							//oldPasswordView.requestFocus();
+                            handleGo();
 							log.info("remove or change of spending password failed");
 						}
 					}
@@ -300,7 +313,7 @@ public class EncryptKeysDialogFragment extends DialogFragment
 							{
 								dismiss();
 							}
-						}, 2000);
+						}, 10);
 					}
 				});
 			}

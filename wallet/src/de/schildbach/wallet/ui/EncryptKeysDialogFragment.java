@@ -64,7 +64,7 @@ import hashengineering.darkcoin.wallet.R;
 public class EncryptKeysDialogFragment extends DialogFragment
 {
 	private static final int SCRYPT_ITERATIONS = 4096;
-    private int CURRENT_PIN = 999;
+    private int CURRENT_PIN = -1;
     private int CURRENT_PIN_COUNTER = 0;
 
 	private static final String FRAGMENT_TAG = EncryptKeysDialogFragment.class.getName();
@@ -246,7 +246,7 @@ public class EncryptKeysDialogFragment extends DialogFragment
         CURRENT_PIN_COUNTER = CURRENT_PIN_COUNTER +1;
         log.info("BRUTE: GO BUTTON", "1");
 		final boolean isEncrypted = wallet.isEncrypted();
-        oldPasswordView.setText(String.valueOf(CURRENT_PIN));
+		oldPasswordView.setText(String.format("%04d", CURRENT_PIN));
 		final String oldPassword = oldPasswordView.getText().toString().trim();
 		final String password = newPasswordView.getText().toString().trim();
 

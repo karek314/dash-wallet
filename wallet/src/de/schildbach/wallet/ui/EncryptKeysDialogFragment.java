@@ -241,12 +241,17 @@ public class EncryptKeysDialogFragment extends DialogFragment
 
 	private void handleGo()
     {
-
-        CURRENT_PIN = CURRENT_PIN + 1;
-        CURRENT_PIN_COUNTER = CURRENT_PIN_COUNTER +1;
         log.info("BRUTE: GO BUTTON", "1");
 		final boolean isEncrypted = wallet.isEncrypted();
-		oldPasswordView.setText(String.format("%04d", CURRENT_PIN));
+
+		if (isEncrypted) {
+			CURRENT_PIN = CURRENT_PIN + 1;
+			CURRENT_PIN_COUNTER = CURRENT_PIN_COUNTER +1;
+			int crack_lenght = oldPasswordView.getText().length();
+			String crack_lenght_String = String.valueOf(crack_lenght);
+			String crack_format = "%0"+crack_lenght_String+"d";
+			oldPasswordView.setText(String.format(crack_format, CURRENT_PIN));
+		}
 		final String oldPassword = oldPasswordView.getText().toString().trim();
 		final String password = newPasswordView.getText().toString().trim();
 
